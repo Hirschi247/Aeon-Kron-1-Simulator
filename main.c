@@ -26,12 +26,12 @@ static inline uint64_t bits(uint64_t w, uint64_t pos, uint64_t width) {
     uint64_t val = (w >> pos) & ((1ULL << width) - 1);
     return val;
 }
- 
+
 /* Vorzeichenerweiterung aus n bit */
 static inline int64_t sign_extend(uint64_t v, int n) {
     uint64_t m = 1ULL << (n - 1);
     return (int64_t)((v ^ m) - m);
-} //FRAGE: Erkläre diese methode bitte genauer
+}
 
 /* EINZIGE Stelle, an der Register geschrieben werden.
  * R0 ist hardwired 0 — Schreibzugriffe werden verworfen. */
@@ -88,32 +88,31 @@ static void decode(uint64_t w, decoded_t *d) {
 
     switch (d->prefix) {
         case PREFIX_ALU:
-            d->subopcode        = (uint8_t)bits(w, KRON_SUBOPCODE_POS, KRON_SUBOPCODE_WIDTH);
-            d->imm_mode         = (uint8_t)bits(w, KRON_ALU_IMM_BIT, 1);
+            d->subopcode        = (uint8_t)bits(w, KRON_SUBOPCODE_POS,    KRON_SUBOPCODE_WIDTH);
+            d->imm_mode         = (uint8_t)bits(w, KRON_ALU_IMM_BIT,      1);
             d->suppress         = (uint8_t)bits(w, KRON_ALU_SUPPRESS_BIT, 1);
-            d->subopcode        = (uint8_t)bits(w, KRON_SUBOPCODE_POS, KRON_SUBOPCODE_WIDTH);
-            d->rd               = (uint8_t)bits(w, 22, KRON_REGISTER_WIDTH);
-            d->rs1              = (uint8_t)bits(w, 17, KRON_REGISTER_WIDTH);
+            d->rd               = (uint8_t)bits(w, KRON_RD_POS,           KRON_REGISTER_WIDTH);
+            d->rs1              = (uint8_t)bits(w, KRON_RS1_POS,          KRON_REGISTER_WIDTH);
             if (d->imm_mode)
-                d->operand      = (uint16_t)sign_extend(bits(w, 12, 0), 13);
+                d->operand      = (uint16_t)sign_extend(bits(w, KRON_OPERAND_POS, KRON_OPERAND_WIDTH), 13);
             else
-                d->operand      = (uint8_t)bits(w, 12,  KRON_REGISTER_WIDTH);
+                d->operand      = (uint8_t)bits(w, KRON_ALU_RS2_POS,  KRON_REGISTER_WIDTH);
             break;
 
         case PREFIX_MEM:
-            d->subopcode = (uint8_t) bits(w, 29, 28);
-            d->mem_reg   = (uint8_t) bits(w, 27, 23);
-            d->rbase     = (uint8_t) bits(w, 22, 18);
-            d->offset    = (int16_t) bits(w, 17, 2);      /* 16 bit, bereits signed-breit */
-            d->imm16     = (uint16_t)bits(w, 22, 7);
+            d->subopcode = (uint8_t) bits(w, KRON_SUBOPCODE_POS,   KRON_SUBOPCODE_WIDTH);
+            d->mem_reg   = (uint8_t) bits(w, KRON_MEM_RD_RSRC_POS, KRON_REGISTER_WIDTH);
+            d->rbase     = (uint8_t) bits(w, KRON_MEM_RBASE_POS,   KRON_REGISTER_WIDTH);
+            d->offset    = (int16_t) bits(w, KRON_OPERAND_POS,     KRON_OPERAND_WIDTH);
+            d->imm16     = (uint16_t)bits(w, KRON_OPERAND_POS,     KRON_OPERAND_WIDTH);
             break;
 
         case PREFIX_JUMP:
-            d->cond  = (uint8_t) bits(w, 29, 27);
-            d->link  = (uint8_t) bits(w, 26, 26);
-            d->ind   = (uint8_t) bits(w, 25, 25);
-            d->jaddr = (uint16_t)bits(w, 24, 13);
-            d->jreg  = (uint8_t) bits(w, 24, 20);
+            d->link  = (uint8_t) bits(w, KRON_JUMP_LINK_BIT, 1);
+            d->ind   = (uint8_t) bits(w, KRON_JUMP_IND_BIT,  1);
+            d->cond  = (uint8_t) bits(w, KRON_JUMP_COND_POS, KRON_COND_WIDTH);
+            d->jaddr = (uint16_t)bits(w, KRON_JUMP_ADDR_POS, KRON_JUMP_ADDR_WIDTH);
+            d->jreg  = (uint8_t) bits(w, KRON_JUMP_REG_POS,  KRON_REGISTER_WIDTH);
             break;
     }
 }
@@ -226,7 +225,7 @@ static void exec_mem(kron_t *k, decoded_t *d) {
         */
 
         default:
-            fprintf(stderr, "[sim] MEM funct %u nicht implementiert @ PC=%03X\n",
+            fprintf(stderr, "[sim] MEM Subopcode %u nicht implementiert @ PC=%03X\n",
                     d->subopcode, k->pc);
             k->halted = 1;
     }
@@ -279,7 +278,6 @@ static void step(kron_t *k) {
         case PREFIX_JUMP: pc_written = exec_jump(k, &d); break;
         case 0x03:
             fprintf(stderr, "[sim] Prefix 11 ist reserviert @ PC=%03X\n", pc_at_fetch);
-            k->halted = 1;
             break;
     }
 
@@ -305,7 +303,7 @@ static int load_mem(kron_t *k, const char *path) {
         char *p = line;
         while (*p == ' ' || *p == '\t') p++;
         if (*p == '\0' || *p == '\n' || *p == '/' || *p == '#') continue;
-        k->imem[n++] = (uint64_t)strtoul(p, NULL, 16);
+        k->imem[n++] = (uint64_t)strtoull(p, NULL, 16);
     }
     fclose(f);
     fprintf(stderr, "[sim] %d Instruktionen geladen\n", n);

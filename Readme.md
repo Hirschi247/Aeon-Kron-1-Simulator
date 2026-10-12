@@ -22,8 +22,8 @@ Der Simulator ist ein Teil eines größeren Projekts:
 
 | Repo | Inhalt |
 |------|--------|
-| [kron-1-isa](https://github.com/Hirschi247/kron-1-isa) | Befehlssatz als C-Bibliothek – **Single Source of Truth** für Opcodes, Bitfelder und Mnemonics |
-| [assembler](https://github.com/Hirschi247/assembler) | Übersetzt KRON-Assembler (`.asm`) in `.mem`-Dateien |
+| [KRON-1-isa](https://github.com/Hirschi247/KRON-1-isa) | Befehlssatz als C-Bibliothek – **Single Source of Truth** für Opcodes, Bitfelder und Mnemonics |
+| [KRON-1-assembler](https://github.com/Hirschi247/KRON-1-assembler) | Übersetzt KRON-Assembler (`.asm`) in `.mem`-Dateien |
 | **Aeon-Kron-1-Simulator** (dieses Repo) | Führt `.mem`-Programme aus |
 
 Assembler und Simulator binden beide die ISA-Bibliothek ein. So ist garantiert, dass sie dasselbe
@@ -44,7 +44,7 @@ Befehlsformat verwenden.
 | I/O | Memory-mapped, LED-Ausgang an Adresse `0x0F00` |
 
 Die vollständige Spezifikation steht im
-[ISA-Repo (KRON-ISA.md)](https://github.com/Hirschi247/kron-1-isa/blob/main/KRON-ISA.md).
+[ISA-Repo (KRON-1-ISA.md)](https://github.com/Hirschi247/KRON-1-isa/blob/master/KRON-1-ISA.md).
 
 ### Aktueller Stand
 
@@ -66,37 +66,37 @@ Die vollständige Spezifikation steht im
 ### Voraussetzungen
 
 - C-Compiler mit C11-Unterstützung (GCC, Clang oder MSVC)
-- CMake ≥ 4.1
-- **Das [ISA-Repo](https://github.com/Hirschi247/kron-1-isa)** – der Simulator wird dagegen gelinkt
+- CMake ≥ 3.16
+- **Das [ISA-Repo](https://github.com/Hirschi247/KRON-1-isa)** – der Simulator wird dagegen gelinkt
 
 ### Ordnerstruktur
 
 Die `CMakeLists.txt` erwartet das ISA-Repo im Ordner **`isa` direkt neben** diesem Repo:
 
 ```
-KRON1/
-├── isa/                      ← git clone https://github.com/Hirschi247/kron-1-isa.git isa
-└── Aeon-Kron-1-Simulator/    ← dieses Repo
+KRON-1/
+├── KRON-1-isa/          ← git clone https://github.com/Hirschi247/KRON-1-isa.git isa
+└── KRON-1-Simulator/    ← dieses Repo
 ```
 
 Also zum Beispiel:
 
 ```bash
-git clone https://github.com/Hirschi247/kron-1-isa.git isa
+git clone https://github.com/Hirschi247/KRON-1-isa.git isa
 ```
 
 ```bash
-git clone https://github.com/Hirschi247/Aeon-Kron-1-Simulator.git
+git clone https://github.com/Hirschi247/KRON-1-simulator.git
 ```
 
 ### Kompilieren
 
 ```bash
-cmake -S Aeon-Kron-1-Simulator -B Aeon-Kron-1-Simulator/build
+cmake -S KRON-1-Simulator -B KRON-1-simulator/build
 ```
 
 ```bash
-cmake --build Aeon-Kron-1-Simulator/build
+cmake --build KRON-1-Simulator/build
 ```
 
 Beim Konfigurieren werden die Beispielprogramme aus `programs/` automatisch in den Build-Ordner
@@ -107,7 +107,7 @@ kopiert.
 ## Benutzung
 
 ```
-AEON_KRON_1 <programm.mem> [max_steps]
+KRON-1-simulator <programm.mem> [max_steps]
 ```
 
 | Argument | Bedeutung |
@@ -118,7 +118,7 @@ AEON_KRON_1 <programm.mem> [max_steps]
 Beispiel (aus dem Build-Ordner):
 
 ```bash
-./AEON_KRON_1 test.mem
+./KRON-1-simulator test.mem
 ```
 
 Der Simulator läuft, bis ein `HALT` erreicht ist oder `max_steps` erreicht wurde. Für jeden
@@ -147,7 +147,7 @@ die mit `#` oder `/` beginnen, werden ignoriert.
 ```
 
 `.mem`-Dateien kann man von Hand schreiben oder mit dem
-[KRON-Assembler](https://github.com/Hirschi247/assembler) aus `.asm`-Quelltext erzeugen.
+[KRON-Assembler](https://github.com/Hirschi247/KRON-1-assembler) aus `.asm`-Quelltext erzeugen.
 
 ### Beispielprogramme
 

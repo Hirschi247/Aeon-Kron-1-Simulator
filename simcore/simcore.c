@@ -1,5 +1,5 @@
 ﻿//
-// Created by Simon Arbeit on 10.10.2026.
+// Created by Simon Hirsch on 10.10.2026.
 //
 
 #include "simcore.h"

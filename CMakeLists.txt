@@ -1,16 +1,16 @@
-cmake_minimum_required(VERSION 4.1)
-project(AEON_KRON_1 C)
+cmake_minimum_required(VERSION 3.16)
+project(KRON-1-assembler C)
 
 set(CMAKE_C_STANDARD 11)
 
-add_subdirectory(../isa isa)
+add_subdirectory(../KRON-1-isa isa)
 
-add_executable(AEON_KRON_1 main.c
+add_executable(KRON-1-assembler main.c
         main.h
         simcore/simcore.c
         simcore/simcore.h)
 
-target_link_libraries(AEON_KRON_1 isa)
+target_link_libraries(KRON-1-assembler isa)
 
 # .mem-Dateien neben die Binary kopieren
 file(COPY ${CMAKE_SOURCE_DIR}/programs/

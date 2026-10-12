@@ -35,7 +35,7 @@ static int load_mem(kron_t *k, const char *path) {
 
 int main(int argc, char **argv) {
     if (argc < 2) {
-        fprintf(stderr, "Nutzung: %s programm.mem [max_steps]\n", argv[0]);
+        fprintf(stderr, "Falsche Startargumente. Nutzung: %s [Name der Programmdatei] [max_steps]\n", argv[0]);
         return 1;
     }
 

@@ -5,73 +5,120 @@
 #ifndef KRON_SIM_MAIN_H
 #define KRON_SIM_MAIN_H
 
-/* ---------- Architektur-Konstanten (aus der Spezifikation) ---------- */
-
-#define IMEM_WORDS   4096      /* 12-bit Adresse, 36 bit breit */
-#define DMEM_WORDS   4096      /* 12-bit Adresse, 16 bit breit */
-#define NUM_REGS     32
-
-#define ADDR_MASK    0x0FFF    /* nur untere 12 bit indizieren Speicher */
-
-/* I/O-Fenster — MUSS identisch zur Hardware sein */
-#define IO_BASE      0x0F00
-#define IO_LED       0x0F00
-
-/* Registerrollen (Konvention, ab Stufe 5 relevant) */
-#define REG_SP       30
-#define REG_LR       31
-#include <stdint.h>
-
-/* ---------- Prozessorzustand ---------- */
 
 typedef struct {
-    uint16_t reg[NUM_REGS]; //FRAGE: Was bedeuted hier und bei imem und dmem "[]"? Sind das Arrays?
-    uint16_t pc;                    /* effektiv 12 bit */
 
-    /* Flags */
-    int flag_z;
-    int flag_n;
-    int flag_v;
-
-    uint64_t imem[IMEM_WORDS];
-    uint16_t dmem[DMEM_WORDS];
-
-    /* Peripherie */
-    uint16_t led;                   /* untere 6 bit sichtbar */
-
-    int halted;
-    uint64_t steps; //FRAGE: Was ist mit Steps gemeint? Ist das die Anzahl der Schritte, die der Prozessor bisher ausgeführt hat?
-} kron_t;
-
-/* ---------- Dekodierte Instruktion ---------- */
+} info_answer;
 
 typedef struct {
-    uint64_t raw;
 
-    /* Everywhere the same */
-    uint8_t  prefix;                /* [35:34] */
-    uint8_t  subopcode;             /* [30:26] */
+} state;
+
+typedef struct {
+
+} read_reg_req;
+
+typedef struct {
+
+} read_reg_answer;
+
+typedef struct {
+
+} write_reg_req;
+
+typedef struct {
+
+} read_dmem_req;
+
+typedef struct {
+
+} read_dmem_answer;
+
+typedef struct {
+
+} write_dmem_req;
+
+typedef struct {
+
+} read_imem_req;
+
+typedef struct {
+
+} read_imem_answer;
+
+typedef struct {
+
+} write_imem_req;
 
 
-    /* ALU */
-    uint8_t  imm_mode;              /* [33]    */
-    uint8_t  suppress;              /* [32]    */
-    uint8_t  rd;                    /* [25:21] */
-    uint8_t  rs1;                   /* [20:16] */
-    uint16_t operand;               /* [4:0] - Register / [15:0] Immediate */
+/* ============================================================
+ * Simulations-Schnittstelle
+ *
+ * Diese Funktionen werden von der Testbench aufgerufen. Sie
+ * kapseln den Simulator und geben die Ergebnisse in
+ * strukturierten Datentypen zurück.
+ * ============================================================ */
 
-    /* Memory */
-    uint8_t  mem_reg;               /* [25:21] — rd bei LOAD / rsrc bei STORE */
-    uint8_t  rbase;                 /* [20:16] */
-    int16_t  offset;                /* [17:2]  signed */
-    uint16_t imm16;                 /* [22:7]  bei LI */
+/* ============================================================
+ * Info: Gibt die Architektur-Informationen zurück
+ * PV  = Protokollversion
+ * ISA = Instruction Set Architecture Version
+ * FCS = Freeze/Cycle-Step verfügbar (fehlt = 0)
+ * ============================================================ */
+info_answer Info();
 
-    /* Jump */
-    uint8_t  cond;                  /* [29:27] */
-    uint8_t  link;                  /* [26]    */
-    uint8_t  ind;                   /* [25]    */
-    uint16_t jaddr;                 /* [24:13] */
-    uint8_t  jreg;                  /* [24:20] */
-} decoded_t;
+/* ============================================================
+ * State: Gibt den aktuellen Prozessorzustand zurück
+ * Gibt es schon als kron_t in simcore.h, aber hier in einer
+ * ============================================================ */
+state State();
+
+/* ============================================================
+ * Step: Führt eine Instruktion aus und gibt den neuen Zustand
+ * zurück. Wenn der Prozessor bereits angehalten ist, passiert
+ * nichts.
+ * ============================================================ */
+state Step();
+
+/* ============================================================
+ * Continue: Führt Instruktionen aus, bis der Prozessor
+ * angehalten ist. Gibt den neuen Zustand zurück.
+ * ============================================================ */
+state Continue();
+
+/* ============================================================
+ * Reset: Setzt den Prozessor in den Ausgangszustand zurück.
+ * ============================================================ */
+state Reset();
+
+/* ============================================================
+ * ReadReg: Liest den Wert eines oder aller Register aus.
+ * ============================================================ */
+read_reg_answer ReadReg(read_reg_req req);
+
+/* ============================================================
+ * WriteReg: Schreibt einen Wert in ein Register. (R0 ist hardwired 0!)
+ * ============================================================ */
+int WriteReg(write_reg_req req);
+
+/* ============================================================
+ * ReadDmem: Liest aus dem Daten-Speicher aus.
+ * ============================================================ */
+read_dmem_answer ReadDmem(read_dmem_req req);
+
+/* ============================================================
+ * WriteDmem: Schreibt in den Daten-Speicher.
+ * ============================================================ */
+int WriteDmem(write_dmem_req req);
+
+/* ============================================================
+ * ReadImem: Liest aus dem Instruktions-Speicher aus.
+ * ============================================================ */
+read_imem_answer ReadImem(read_imem_req req);
+
+/* ============================================================
+ * WriteImem: Schreibt in den Instruktions-Speicher.
+ * ============================================================ */
+int WriteImem(write_imem_req req);
 
 #endif //KRON_SIM_MAIN_H

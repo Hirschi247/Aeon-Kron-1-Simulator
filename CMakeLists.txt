@@ -6,7 +6,9 @@ set(CMAKE_C_STANDARD 11)
 add_subdirectory(../isa isa)
 
 add_executable(AEON_KRON_1 main.c
-        main.h)
+        main.h
+        simcore/simcore.c
+        simcore/simcore.h)
 
 target_link_libraries(AEON_KRON_1 isa)
 

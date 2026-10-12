@@ -1,8 +1,5 @@
 /* ============================================================
  * KRON-1 — Instruction Set Simulator (Golden Reference Model)
- *
- * Bauen:  cc -Wall -Wextra -O2 -o kron_sim kron_sim.c
- * Nutzen: ./kron_sim programm.mem [max_steps]
  * ============================================================ */
 
 #include "main.h"

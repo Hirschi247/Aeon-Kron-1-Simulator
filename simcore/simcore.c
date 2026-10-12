@@ -159,7 +159,7 @@ static int cond_true(kron_t *k, uint8_t cond) {
 
 static void exec_alu(kron_t *k, decoded_t *d) {
     uint16_t a = k->reg[d->rs1];
-    uint16_t b = d->imm_mode ? (uint16_t)d->operand : k->reg[d->operand & KRON_MASK(KRON_REGISTER_WIDTH)] << KRON_OPERAND_POS; //TODO: Ist das so richtig??
+    uint16_t b = d->imm_mode ? (uint16_t)d->operand : k->reg[d->operand & KRON_MASK(KRON_REGISTER_WIDTH)];
     uint16_t res = 0;
     int writes_back = 1;
 

@@ -89,7 +89,7 @@ static void decode(uint64_t w, decoded_t *d) {
             d->rd               = (uint8_t)bits(w, KRON_RD_POS,           KRON_REGISTER_WIDTH);
             d->rs1              = (uint8_t)bits(w, KRON_RS1_POS,          KRON_REGISTER_WIDTH);
             if (d->imm_mode)
-                d->operand      = (uint16_t)(bits(w, KRON_OPERAND_POS, KRON_OPERAND_WIDTH), KRON_OPERAND_WIDTH);
+                d->operand      = (uint16_t)bits(w, KRON_OPERAND_POS, KRON_OPERAND_WIDTH);
             else
                 d->operand      = (uint8_t)bits(w, KRON_ALU_RS2_POS,  KRON_REGISTER_WIDTH);
             break;

@@ -8,6 +8,7 @@
 #include <stdlib.h>
 #include <stdint.h>
 #include <string.h>
+#include <inttypes.h>
 
 #include "isa.h"
 
@@ -255,7 +256,7 @@ static int exec_jump(kron_t *k, decoded_t *d) {
  * ============================================================ */
 
 static void trace(kron_t *k, uint16_t pc_at_fetch, uint64_t instr) {
-    printf("%03X %08X | Z%d N%d V%d | LED %02X\n",
+    printf("%03X %09" PRIX64 " | Z%d N%d V%d | LED %02X\n",
            pc_at_fetch, instr, k->flag_z, k->flag_n, k->flag_v, k->led);
 }
 

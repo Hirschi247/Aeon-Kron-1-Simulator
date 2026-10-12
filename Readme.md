@@ -51,9 +51,11 @@ Die vollständige Spezifikation steht im
 - [x] Laden von `.mem`-Programmen
 - [x] Dekodierung aller drei Befehlsklassen (ALU, Memory, Jump)
 - [x] `LI`, `ADD`/`ADDI`, `SUB`/`SUBI`, `STORE`, `JMP`/`JMPR`, `HALT`
-- [x] Bedingte Sprünge über die Flags Z, N, V
+- [x] Flags Z, N, V bei `ADD`
 - [x] Memory-mapped LED-Ausgang
-- [ ] Logik- und Shift-Befehle (`AND`, `OR`, `XOR`, `NOT`, `SHL`, …)
+- [x] Trace-Ausgabe pro Schritt (Grundlage für späteren Vergleich mit der Hardware)
+- [ ] Flags bei `SUB`, Logik- und Shift-Befehle (`AND`, `OR`, `XOR`, `NOT`, `SHL`, …)
+- [ ] Bedingte Sprünge (`EQ`, `NE`, `LT`, `LE`, `GT`, `GE`)
 - [ ] `LOAD`, Unterprogramme mit Link-Register und Stack
 - [ ] Debug-Schnittstelle (Step, Continue, Register/Speicher lesen und schreiben) für ein TUI-Frontend
 
@@ -116,14 +118,17 @@ AEON_KRON_1 <programm.mem> [max_steps]
 Beispiel (aus dem Build-Ordner):
 
 ```bash
-./AEON_KRON_1 testProgramm.mem
+./AEON_KRON_1 test.mem
 ```
 
-Der Simulator läuft, bis ein `HALT` erreicht ist oder `max_steps` erreicht wurde, und gibt dann den
-Zustand aus – alle Register ungleich 0 und den Wert des LED-Ausgangs:
+Der Simulator läuft, bis ein `HALT` erreicht ist oder `max_steps` erreicht wurde. Für jeden
+ausgeführten Befehl gibt er eine Trace-Zeile aus (PC, Befehlswort, Flags, LED), am Ende den
+Zustand – alle Register ungleich 0 und den Wert des LED-Ausgangs:
 
 ```
 [sim] <n> Instruktionen geladen
+<pc> <befehl> | Z<z> N<n> V<v> | LED <hex>
+...
 [sim] Ende nach <steps> Schritten, LED=<hex>
   R1  = <hex>
   R2  = <hex>

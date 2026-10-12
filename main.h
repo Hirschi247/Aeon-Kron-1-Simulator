@@ -1,5 +1,5 @@
 ﻿//
-// Created by Simon Arbeit on 03.10.2026.
+// Created by Simon Hirsch on 03.10.2026.
 //
 
 #ifndef KRON_SIM_MAIN_H

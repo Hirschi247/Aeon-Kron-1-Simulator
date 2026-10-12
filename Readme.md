@@ -24,7 +24,7 @@ Der Simulator ist ein Teil eines größeren Projekts:
 |------|--------|
 | [KRON-1-isa](https://github.com/Hirschi247/KRON-1-isa) | Befehlssatz als C-Bibliothek – **Single Source of Truth** für Opcodes, Bitfelder und Mnemonics |
 | [KRON-1-assembler](https://github.com/Hirschi247/KRON-1-assembler) | Übersetzt KRON-Assembler (`.asm`) in `.mem`-Dateien |
-| **Aeon-Kron-1-Simulator** (dieses Repo) | Führt `.mem`-Programme aus |
+| **KRON-1-simulator** (dieses Repo) | Führt `.mem`-Programme aus |
 
 Assembler und Simulator binden beide die ISA-Bibliothek ein. So ist garantiert, dass sie dasselbe
 Befehlsformat verwenden.
@@ -44,7 +44,7 @@ Befehlsformat verwenden.
 | I/O | Memory-mapped, LED-Ausgang an Adresse `0x0F00` |
 
 Die vollständige Spezifikation steht im
-[ISA-Repo (KRON-1-ISA.md)](https://github.com/Hirschi247/KRON-1-isa/blob/master/KRON-1-ISA.md).
+[ISA-Repo (KRON-ISA.md)](https://github.com/Hirschi247/KRON-1-isa/blob/master/KRON-ISA.md).
 
 ### Aktueller Stand
 
@@ -71,18 +71,18 @@ Die vollständige Spezifikation steht im
 
 ### Ordnerstruktur
 
-Die `CMakeLists.txt` erwartet das ISA-Repo im Ordner **`isa` direkt neben** diesem Repo:
+Die `CMakeLists.txt` erwartet das ISA-Repo im Ordner **`KRON-1-isa` direkt neben** diesem Repo:
 
 ```
 KRON-1/
-├── KRON-1-isa/          ← git clone https://github.com/Hirschi247/KRON-1-isa.git isa
-└── KRON-1-Simulator/    ← dieses Repo
+├── KRON-1-isa/          ← git clone https://github.com/Hirschi247/KRON-1-isa.git
+└── KRON-1-simulator/    ← dieses Repo
 ```
 
 Also zum Beispiel:
 
 ```bash
-git clone https://github.com/Hirschi247/KRON-1-isa.git isa
+git clone https://github.com/Hirschi247/KRON-1-isa.git
 ```
 
 ```bash
@@ -92,11 +92,11 @@ git clone https://github.com/Hirschi247/KRON-1-simulator.git
 ### Kompilieren
 
 ```bash
-cmake -S KRON-1-Simulator -B KRON-1-simulator/build
+cmake -S KRON-1-simulator -B KRON-1-simulator/build
 ```
 
 ```bash
-cmake --build KRON-1-Simulator/build
+cmake --build KRON-1-simulator/build
 ```
 
 Beim Konfigurieren werden die Beispielprogramme aus `programs/` automatisch in den Build-Ordner

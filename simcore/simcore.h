@@ -63,15 +63,15 @@ typedef struct {
     /* Memory */
     uint8_t  mem_reg;               /* [25:21] — rd bei LOAD / rsrc bei STORE */
     uint8_t  rbase;                 /* [20:16] */
-    int16_t  offset;                /* [17:2]  signed */
-    uint16_t imm16;                 /* [22:7]  bei LI */
+    int16_t  offset;                /* [15:0]  signed */
+    uint16_t imm16;                 /* [15:0]  bei LI */
 
     /* Jump */
-    uint8_t  cond;                  /* [29:27] */
-    uint8_t  link;                  /* [26]    */
-    uint8_t  ind;                   /* [25]    */
-    uint16_t jaddr;                 /* [24:13] */
-    uint8_t  jreg;                  /* [24:20] */
+    uint8_t  cond;                  /* [28:26] */
+    uint8_t  link;                  /* [33]    */
+    uint8_t  ind;                   /* [32]    */
+    uint16_t jaddr;                 /* [11:0]  bei ind = 0 */
+    uint8_t  jreg;                  /* [4:0]   bei ind = 1 */
 } decoded_t;
 
 void step(kron_t *k);
